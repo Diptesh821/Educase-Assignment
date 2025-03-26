@@ -13,6 +13,9 @@ router.get('/listSchools', async (req, res) => {
   
       // Retrieve all schools and sort them by proximity
       const schools = await School.findAll();
+      if(!schools){
+        return res.status(201).json({message:"No school found"})
+      }
       const sortedSchools = schools.map((school) => ({
         ...school,
         distance: calculateDistance(latitude, longitude, school.latitude, school.longitude),
