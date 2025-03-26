@@ -1,0 +1,989 @@
+{
+	"info": {
+		"_postman_id": "b8e15de8-d8be-4438-96dc-78806aeb1248",
+		"name": "School Management API",
+		"description": "---\n\n## **Important Note on Duplicate Entries**\n\nThis API **prevents** adding a new school if there is already an existing school with the **same** **`name`** **and** **`address`**. To avoid an error response when adding a school:\n\n1. **List Existing Schools First**\n    \n    - Make a **GET** request to `/listSchools` (with any valid latitude and longitude).\n        \n    - Review the returned list of schools to see which names and addresses are already in the database.\n        \n2. **Check for Duplicates**\n    \n    - If you see a school with the **same** `name` and `address` as what you plan to add, either:\n        \n        - Change the `name` or `address`, or\n            \n        - Use a different school altogether.\n            \n3. **Then Add Your School**\n    \n    - Make the **POST** request to `/addSchool` with a **unique** combination of `name` and `address`.\n        \n4. **Error on Duplicate**\n    \n    - If you still attempt to add a school with a `name` and `address` that already exists, the API will return an **error** (e.g., 500 `Internal Server Error`).\n        \n\n---\n\n## **School Management API**\n\nThis collection contains two endpoints that demonstrate how to manage school data using Node.js, Express.js, and MySQL. The system allows users to **add a new school** and **retrieve a list of schools** sorted by proximity to a user-specified location.\n\n### **Endpoints Overview**\n\n1. **Add School** (POST `/addSchool`)\n    \n    - **Purpose**: Create a new school record in the database.\n        \n    - { \"name\": \"Greenwood High\", \"address\": \"123 Main St\", \"latitude\": 12.9716, \"longitude\": 77.5946}\n        \n    - **Validation**:\n        \n        - `name`: Must be a non-empty string, should contain atleast one character and name must be between 2 and 100 characters.\n            \n        - `address`: Must be a non-empty string, should contain atleast one character and address must be between 2 and 255 characters.\n            \n        - `latitude` & `longitude`: Must be valid numbers and not strings.\n            \n        - If `name` and `address` already exist in the database, the API returns a **\\[500 error\\]** to prevent duplicates.\n            \n    - **Response**:\n        \n        - { \"message\": \"School added successfully\", \"id\": }\n            \n        - **400** if any field is missing or invalid.\n            \n        - **500** for server/database errors.\n            \n2. **List Schools** (GET `/listSchools`)\n    \n    - **Purpose**: Retrieve all schools, sorted by proximity to the provided coordinates.\n        \n    - **Query Parameters**:\n        \n        - `latitude` (required)\n            \n        - `longitude` (required)\n            \n    - **Response**:\n        \n        - \\[ { \"id\": 1, \"name\": \"Greenwood High\", \"address\": \"123 Main St\", \"latitude\": 12.9716, \"longitude\": 77.5946, \"distance\": 0 }, ...\\]\n            \n        - **400** if latitude or longitude is missing or invalid.\n            \n        - **500** for server/database errors.\n            \n\n### **Usage Instructions**\n\n1. **Import this collection** into Postman.\n    \n2. Update the **Base URL** (or use the full URL) to point to your local server (e.g., `http://localhost:3000`) or deployed server (e.g., `https://your-app-name.onrender.com`).\n    \n3. For the **Add School** request:\n    \n    - Go to the **Body** tab → **raw** → **JSON**.\n        \n    - Input a JSON object with `name`, `address`, `latitude`, and `longitude`.\n        \n4. For the **List Schools** request:\n    \n    - Provide `latitude` and `longitude` as **query parameters** (or directly in the URL).\n        \n\n### **Technical Notes**\n\n- **Database**: MySQL table named `schools` with fields: `id`, `name`, `address`, `latitude`, and `longitude`.\n    \n- **Distance Calculation**: Uses the **Haversine formula** to compute the distance between user’s coordinates and each school’s coordinates in kilometers.\n    \n- **Validation**: Basic checks ensure non-empty strings for `name` and `address` and numeric values for `latitude` and `longitude`.\n    \n\n### **Further Enhancements**\n\n- Add **Update** or **Delete** endpoints for more complete CRUD functionality.\n    \n- Implement **authentication** if the API needs to restrict who can add or modify school data.\n    \n- Add **pagination** or **search** to the `/listSchools` endpoint if the number of schools becomes large.\n    \n\n---\n\n**Enjoy using the School Management API collection!** If you have any questions or need more details, please refer to the project’s documentation or contact the developer.",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "40367706"
+	},
+	"item": [
+		{
+			"name": "Add School",
+			"request": {
+				"auth": {
+					"type": "noauth"
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"name\": \"Greenwood High\",\r\n  \"address\": \"123 Main St\",\r\n  \"latitude\": 12.9716,\r\n  \"longitude\": 77.5946\r\n}\r\n",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "https://educase-assignment-tfkm.onrender.com/addSchool",
+					"protocol": "https",
+					"host": [
+						"educase-assignment-tfkm",
+						"onrender",
+						"com"
+					],
+					"path": [
+						"addSchool"
+					]
+				}
+			},
+			"response": [
+				{
+					"name": "Valid Input - Success",
+					"originalRequest": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"name\": \"Greenwood High\",\r\n  \"address\": \"123 Main St\",\r\n  \"latitude\": 12.9716,\r\n  \"longitude\": 77.5946\r\n}\r\n",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://educase-assignment-tfkm.onrender.com/addSchool",
+							"protocol": "https",
+							"host": [
+								"educase-assignment-tfkm",
+								"onrender",
+								"com"
+							],
+							"path": [
+								"addSchool"
+							]
+						}
+					},
+					"status": "Created",
+					"code": 201,
+					"_postman_previewlanguage": "json",
+					"header": [
+						{
+							"key": "Date",
+							"value": "Wed, 26 Mar 2025 17:18:49 GMT"
+						},
+						{
+							"key": "Content-Type",
+							"value": "application/json; charset=utf-8"
+						},
+						{
+							"key": "Content-Length",
+							"value": "46"
+						},
+						{
+							"key": "Connection",
+							"value": "keep-alive"
+						},
+						{
+							"key": "Content-Encoding",
+							"value": "br"
+						},
+						{
+							"key": "etag",
+							"value": "W/\"2e-1n0Ro+XpkGzjXRwf/j1DBStyCyQ\""
+						},
+						{
+							"key": "rndr-id",
+							"value": "2b74cca5-1114-4749"
+						},
+						{
+							"key": "vary",
+							"value": "Accept-Encoding"
+						},
+						{
+							"key": "x-powered-by",
+							"value": "Express"
+						},
+						{
+							"key": "x-render-origin-server",
+							"value": "Render"
+						},
+						{
+							"key": "cf-cache-status",
+							"value": "DYNAMIC"
+						},
+						{
+							"key": "Server",
+							"value": "cloudflare"
+						},
+						{
+							"key": "CF-RAY",
+							"value": "92684f384e7c93cb-CCU"
+						},
+						{
+							"key": "alt-svc",
+							"value": "h3=\":443\"; ma=86400"
+						}
+					],
+					"cookie": [],
+					"body": "{\n    \"message\": \"School added successfully\",\n    \"id\": 2\n}"
+				},
+				{
+					"name": "Invalid Data type - Error",
+					"originalRequest": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"name\": \"Greenwood High\",\r\n  \"address\": \"123 Main St\",\r\n  \"latitude\": 12.9716,\r\n  \"longitude\": \"hello\"\r\n}\r\n",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://educase-assignment-tfkm.onrender.com/addSchool",
+							"protocol": "https",
+							"host": [
+								"educase-assignment-tfkm",
+								"onrender",
+								"com"
+							],
+							"path": [
+								"addSchool"
+							]
+						}
+					},
+					"status": "Bad Request",
+					"code": 400,
+					"_postman_previewlanguage": "json",
+					"header": [
+						{
+							"key": "Date",
+							"value": "Wed, 26 Mar 2025 17:25:29 GMT"
+						},
+						{
+							"key": "Content-Type",
+							"value": "application/json; charset=utf-8"
+						},
+						{
+							"key": "Content-Length",
+							"value": "58"
+						},
+						{
+							"key": "Connection",
+							"value": "keep-alive"
+						},
+						{
+							"key": "Content-Encoding",
+							"value": "br"
+						},
+						{
+							"key": "etag",
+							"value": "W/\"38-fVO2W8bc7gEnGLPghD46eR/yyM4\""
+						},
+						{
+							"key": "rndr-id",
+							"value": "8931777e-3049-4fe8"
+						},
+						{
+							"key": "vary",
+							"value": "Accept-Encoding"
+						},
+						{
+							"key": "x-powered-by",
+							"value": "Express"
+						},
+						{
+							"key": "x-render-origin-server",
+							"value": "Render"
+						},
+						{
+							"key": "cf-cache-status",
+							"value": "DYNAMIC"
+						},
+						{
+							"key": "Server",
+							"value": "cloudflare"
+						},
+						{
+							"key": "CF-RAY",
+							"value": "926858fa3a323fbb-BOM"
+						},
+						{
+							"key": "alt-svc",
+							"value": "h3=\":443\"; ma=86400"
+						}
+					],
+					"cookie": [],
+					"body": "{\n    \"error\": \"Latitude and longitude must be valid numbers\"\n}"
+				},
+				{
+					"name": "Missing Field - Error",
+					"originalRequest": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"name\": \"\",\r\n  \"address\": \"123 Main St\",\r\n  \"latitude\": 12.9716,\r\n  \"longitude\": 77.5946\r\n}\r\n",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://educase-assignment-tfkm.onrender.com/addSchool",
+							"protocol": "https",
+							"host": [
+								"educase-assignment-tfkm",
+								"onrender",
+								"com"
+							],
+							"path": [
+								"addSchool"
+							]
+						}
+					},
+					"status": "Bad Request",
+					"code": 400,
+					"_postman_previewlanguage": "json",
+					"header": [
+						{
+							"key": "Date",
+							"value": "Wed, 26 Mar 2025 17:26:51 GMT"
+						},
+						{
+							"key": "Content-Type",
+							"value": "application/json; charset=utf-8"
+						},
+						{
+							"key": "Content-Length",
+							"value": "37"
+						},
+						{
+							"key": "Connection",
+							"value": "keep-alive"
+						},
+						{
+							"key": "Content-Encoding",
+							"value": "br"
+						},
+						{
+							"key": "etag",
+							"value": "W/\"23-4BJvIMLzh0whUGyrd0lrv+Uwmpk\""
+						},
+						{
+							"key": "rndr-id",
+							"value": "fac6909e-995c-494f"
+						},
+						{
+							"key": "vary",
+							"value": "Accept-Encoding"
+						},
+						{
+							"key": "x-powered-by",
+							"value": "Express"
+						},
+						{
+							"key": "x-render-origin-server",
+							"value": "Render"
+						},
+						{
+							"key": "cf-cache-status",
+							"value": "DYNAMIC"
+						},
+						{
+							"key": "Server",
+							"value": "cloudflare"
+						},
+						{
+							"key": "CF-RAY",
+							"value": "92685af84b5b3fba-BOM"
+						},
+						{
+							"key": "alt-svc",
+							"value": "h3=\":443\"; ma=86400"
+						}
+					],
+					"cookie": [],
+					"body": "{\n    \"error\": \"All fields are required\"\n}"
+				},
+				{
+					"name": "Duplicate Name and Address - Error",
+					"originalRequest": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"name\": \"Greenwood High\",\r\n  \"address\": \"123 Main St\",\r\n  \"latitude\": 12.9716,\r\n  \"longitude\": 77.5946\r\n}\r\n",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://educase-assignment-tfkm.onrender.com/addSchool",
+							"protocol": "https",
+							"host": [
+								"educase-assignment-tfkm",
+								"onrender",
+								"com"
+							],
+							"path": [
+								"addSchool"
+							]
+						}
+					},
+					"status": "Internal Server Error",
+					"code": 500,
+					"_postman_previewlanguage": "json",
+					"header": [
+						{
+							"key": "Date",
+							"value": "Wed, 26 Mar 2025 17:38:00 GMT"
+						},
+						{
+							"key": "Content-Type",
+							"value": "application/json; charset=utf-8"
+						},
+						{
+							"key": "Content-Length",
+							"value": "37"
+						},
+						{
+							"key": "Connection",
+							"value": "keep-alive"
+						},
+						{
+							"key": "Content-Encoding",
+							"value": "br"
+						},
+						{
+							"key": "etag",
+							"value": "W/\"21-Fau8GdrOCOyGNNH/IiTxy2DuMu0\""
+						},
+						{
+							"key": "rndr-id",
+							"value": "830e9bb9-1223-4aa6"
+						},
+						{
+							"key": "vary",
+							"value": "Accept-Encoding"
+						},
+						{
+							"key": "x-powered-by",
+							"value": "Express"
+						},
+						{
+							"key": "x-render-origin-server",
+							"value": "Render"
+						},
+						{
+							"key": "cf-cache-status",
+							"value": "DYNAMIC"
+						},
+						{
+							"key": "Server",
+							"value": "cloudflare"
+						},
+						{
+							"key": "CF-RAY",
+							"value": "92686b4e1b07f3cd-BOM"
+						},
+						{
+							"key": "alt-svc",
+							"value": "h3=\":443\"; ma=86400"
+						}
+					],
+					"cookie": [],
+					"body": "{\n    \"error\": \"Internal Server Error\"\n}"
+				},
+				{
+					"name": "Name or Address contains only numbers - Error",
+					"originalRequest": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"name\": \"23456789\",\r\n  \"address\": \"123 Main St\",\r\n  \"latitude\": 12.9716,\r\n  \"longitude\": 77.5946\r\n}\r\n",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://educase-assignment-tfkm.onrender.com/addSchool",
+							"protocol": "https",
+							"host": [
+								"educase-assignment-tfkm",
+								"onrender",
+								"com"
+							],
+							"path": [
+								"addSchool"
+							]
+						}
+					},
+					"status": "Bad Request",
+					"code": 400,
+					"_postman_previewlanguage": "json",
+					"header": [
+						{
+							"key": "Date",
+							"value": "Wed, 26 Mar 2025 17:44:43 GMT"
+						},
+						{
+							"key": "Content-Type",
+							"value": "application/json; charset=utf-8"
+						},
+						{
+							"key": "Content-Length",
+							"value": "59"
+						},
+						{
+							"key": "Connection",
+							"value": "keep-alive"
+						},
+						{
+							"key": "Content-Encoding",
+							"value": "br"
+						},
+						{
+							"key": "etag",
+							"value": "W/\"3e-n5lIZinM71S+WusQ0WtvzhE5s50\""
+						},
+						{
+							"key": "rndr-id",
+							"value": "4c1558f4-fc47-485a"
+						},
+						{
+							"key": "vary",
+							"value": "Accept-Encoding"
+						},
+						{
+							"key": "x-powered-by",
+							"value": "Express"
+						},
+						{
+							"key": "x-render-origin-server",
+							"value": "Render"
+						},
+						{
+							"key": "cf-cache-status",
+							"value": "DYNAMIC"
+						},
+						{
+							"key": "Server",
+							"value": "cloudflare"
+						},
+						{
+							"key": "CF-RAY",
+							"value": "92687528ed2993c1-CCU"
+						},
+						{
+							"key": "alt-svc",
+							"value": "h3=\":443\"; ma=86400"
+						}
+					],
+					"cookie": [],
+					"body": "{\n    \"error\": \"Name and address must contain at least one letter.\"\n}"
+				},
+				{
+					"name": "Name too short or too long - Error",
+					"originalRequest": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"name\": \"G\",\r\n  \"address\": \"123 Main St\",\r\n  \"latitude\": 12.9716,\r\n  \"longitude\": 77.5946\r\n}\r\n",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://educase-assignment-tfkm.onrender.com/addSchool",
+							"protocol": "https",
+							"host": [
+								"educase-assignment-tfkm",
+								"onrender",
+								"com"
+							],
+							"path": [
+								"addSchool"
+							]
+						}
+					},
+					"status": "Bad Request",
+					"code": 400,
+					"_postman_previewlanguage": "json",
+					"header": [
+						{
+							"key": "Date",
+							"value": "Wed, 26 Mar 2025 17:45:23 GMT"
+						},
+						{
+							"key": "Content-Type",
+							"value": "application/json; charset=utf-8"
+						},
+						{
+							"key": "Content-Length",
+							"value": "54"
+						},
+						{
+							"key": "Connection",
+							"value": "keep-alive"
+						},
+						{
+							"key": "Content-Encoding",
+							"value": "br"
+						},
+						{
+							"key": "etag",
+							"value": "W/\"36-914N0ZV/oKMc/pw6yiEMIwzOdec\""
+						},
+						{
+							"key": "rndr-id",
+							"value": "c0e75fef-3295-47f4"
+						},
+						{
+							"key": "vary",
+							"value": "Accept-Encoding"
+						},
+						{
+							"key": "x-powered-by",
+							"value": "Express"
+						},
+						{
+							"key": "x-render-origin-server",
+							"value": "Render"
+						},
+						{
+							"key": "cf-cache-status",
+							"value": "DYNAMIC"
+						},
+						{
+							"key": "Server",
+							"value": "cloudflare"
+						},
+						{
+							"key": "CF-RAY",
+							"value": "9268761f8f0793c1-CCU"
+						},
+						{
+							"key": "alt-svc",
+							"value": "h3=\":443\"; ma=86400"
+						}
+					],
+					"cookie": [],
+					"body": "{\n    \"error\": \"Name must be between 2 and 100 characters.\"\n}"
+				},
+				{
+					"name": "Address too short or too long - Error",
+					"originalRequest": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"name\": \"Greenwood High\",\r\n  \"address\": \"g\",\r\n  \"latitude\": 12.9716,\r\n  \"longitude\": 77.5946\r\n}\r\n",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://educase-assignment-tfkm.onrender.com/addSchool",
+							"protocol": "https",
+							"host": [
+								"educase-assignment-tfkm",
+								"onrender",
+								"com"
+							],
+							"path": [
+								"addSchool"
+							]
+						}
+					},
+					"status": "Bad Request",
+					"code": 400,
+					"_postman_previewlanguage": "json",
+					"header": [
+						{
+							"key": "Date",
+							"value": "Wed, 26 Mar 2025 17:48:25 GMT"
+						},
+						{
+							"key": "Content-Type",
+							"value": "application/json; charset=utf-8"
+						},
+						{
+							"key": "Content-Length",
+							"value": "54"
+						},
+						{
+							"key": "Connection",
+							"value": "keep-alive"
+						},
+						{
+							"key": "Content-Encoding",
+							"value": "br"
+						},
+						{
+							"key": "etag",
+							"value": "W/\"39-Fg/NEqBFunALdKzZsrDpv586GDg\""
+						},
+						{
+							"key": "rndr-id",
+							"value": "3537bfc5-6962-4828"
+						},
+						{
+							"key": "vary",
+							"value": "Accept-Encoding"
+						},
+						{
+							"key": "x-powered-by",
+							"value": "Express"
+						},
+						{
+							"key": "x-render-origin-server",
+							"value": "Render"
+						},
+						{
+							"key": "cf-cache-status",
+							"value": "DYNAMIC"
+						},
+						{
+							"key": "Server",
+							"value": "cloudflare"
+						},
+						{
+							"key": "CF-RAY",
+							"value": "92687a9569603d36-BOM"
+						},
+						{
+							"key": "alt-svc",
+							"value": "h3=\":443\"; ma=86400"
+						}
+					],
+					"cookie": [],
+					"body": "{\n    \"error\": \"Address must be between 2 and 255 characters.\"\n}"
+				}
+			]
+		},
+		{
+			"name": "List Schools",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "https://educase-assignment-tfkm.onrender.com/listSchools?latitude=20.25230443011721&longitude=85.80737221095606",
+					"protocol": "https",
+					"host": [
+						"educase-assignment-tfkm",
+						"onrender",
+						"com"
+					],
+					"path": [
+						"listSchools"
+					],
+					"query": [
+						{
+							"key": "latitude",
+							"value": "20.25230443011721"
+						},
+						{
+							"key": "longitude",
+							"value": "85.80737221095606"
+						}
+					]
+				}
+			},
+			"response": [
+				{
+					"name": "Missing Longitude - Error",
+					"originalRequest": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "https://educase-assignment-tfkm.onrender.com/listSchools?latitude=20.25230443011721",
+							"protocol": "https",
+							"host": [
+								"educase-assignment-tfkm",
+								"onrender",
+								"com"
+							],
+							"path": [
+								"listSchools"
+							],
+							"query": [
+								{
+									"key": "latitude",
+									"value": "20.25230443011721"
+								},
+								{
+									"key": "longitude",
+									"value": "85.80737221095606",
+									"disabled": true
+								}
+							]
+						}
+					},
+					"status": "Bad Request",
+					"code": 400,
+					"_postman_previewlanguage": "json",
+					"header": [
+						{
+							"key": "Date",
+							"value": "Wed, 26 Mar 2025 17:42:02 GMT"
+						},
+						{
+							"key": "Content-Type",
+							"value": "application/json; charset=utf-8"
+						},
+						{
+							"key": "Content-Length",
+							"value": "46"
+						},
+						{
+							"key": "Connection",
+							"value": "keep-alive"
+						},
+						{
+							"key": "Content-Encoding",
+							"value": "br"
+						},
+						{
+							"key": "etag",
+							"value": "W/\"2f-ygH1t+0ewiGujFzXyZfVp6SRo3k\""
+						},
+						{
+							"key": "rndr-id",
+							"value": "6e230358-a064-428b"
+						},
+						{
+							"key": "vary",
+							"value": "Accept-Encoding"
+						},
+						{
+							"key": "x-powered-by",
+							"value": "Express"
+						},
+						{
+							"key": "x-render-origin-server",
+							"value": "Render"
+						},
+						{
+							"key": "cf-cache-status",
+							"value": "DYNAMIC"
+						},
+						{
+							"key": "Server",
+							"value": "cloudflare"
+						},
+						{
+							"key": "CF-RAY",
+							"value": "9268713a386894b6-CCU"
+						},
+						{
+							"key": "alt-svc",
+							"value": "h3=\":443\"; ma=86400"
+						}
+					],
+					"cookie": [],
+					"body": "{\n    \"error\": \"Latitude and Longitude are required\"\n}"
+				},
+				{
+					"name": "Valid Coordinates - success",
+					"originalRequest": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "https://educase-assignment-tfkm.onrender.com/listSchools?latitude=20.25230443011721&longitude=85.80737221095606",
+							"protocol": "https",
+							"host": [
+								"educase-assignment-tfkm",
+								"onrender",
+								"com"
+							],
+							"path": [
+								"listSchools"
+							],
+							"query": [
+								{
+									"key": "latitude",
+									"value": "20.25230443011721"
+								},
+								{
+									"key": "longitude",
+									"value": "85.80737221095606"
+								}
+							]
+						}
+					},
+					"status": "OK",
+					"code": 200,
+					"_postman_previewlanguage": "json",
+					"header": [
+						{
+							"key": "Date",
+							"value": "Wed, 26 Mar 2025 18:23:07 GMT"
+						},
+						{
+							"key": "Content-Type",
+							"value": "application/json; charset=utf-8"
+						},
+						{
+							"key": "Content-Length",
+							"value": "288"
+						},
+						{
+							"key": "Connection",
+							"value": "keep-alive"
+						},
+						{
+							"key": "Content-Encoding",
+							"value": "br"
+						},
+						{
+							"key": "etag",
+							"value": "W/\"298-Vzh7Ebk1sDRCRExxuTsBsFL4ffE\""
+						},
+						{
+							"key": "rndr-id",
+							"value": "292fc972-6bd7-4978"
+						},
+						{
+							"key": "vary",
+							"value": "Accept-Encoding"
+						},
+						{
+							"key": "x-powered-by",
+							"value": "Express"
+						},
+						{
+							"key": "x-render-origin-server",
+							"value": "Render"
+						},
+						{
+							"key": "cf-cache-status",
+							"value": "DYNAMIC"
+						},
+						{
+							"key": "Server",
+							"value": "cloudflare"
+						},
+						{
+							"key": "CF-RAY",
+							"value": "9268ad65ab6493c5-CCU"
+						},
+						{
+							"key": "alt-svc",
+							"value": "h3=\":443\"; ma=86400"
+						}
+					],
+					"cookie": [],
+					"body": "[\n    {\n        \"id\": 3,\n        \"name\": \"Riverside Academy\",\n        \"address\": \"101 Riverside Lane\",\n        \"latitude\": 12.9833,\n        \"longitude\": 77.6055,\n        \"distance\": 1189.8037082650462\n    },\n    {\n        \"id\": 2,\n        \"name\": \"Eastside School\",\n        \"address\": \"14 Church Street\",\n        \"latitude\": 12.9769,\n        \"longitude\": 77.5998,\n        \"distance\": 1190.7421561003066\n    },\n    {\n        \"id\": 1,\n        \"name\": \"Greenwood High\",\n        \"address\": \"123 Main St\",\n        \"latitude\": 12.9716,\n        \"longitude\": 77.5946,\n        \"distance\": 1191.5567858625589\n    },\n    {\n        \"id\": 5,\n        \"name\": \"St. Joseph's School\",\n        \"address\": \"25 Brigade Road\",\n        \"latitude\": 12.9537,\n        \"longitude\": 77.5988,\n        \"distance\": 1192.6097134354666\n    },\n    {\n        \"id\": 4,\n        \"name\": \"Maple Leaf School\",\n        \"address\": \"560 Maple Street\",\n        \"latitude\": 12.9604,\n        \"longitude\": 77.5839,\n        \"distance\": 1193.2557571517648\n    }\n]"
+				},
+				{
+					"name": "Negative Coordinates - Success",
+					"originalRequest": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "https://educase-assignment-tfkm.onrender.com/listSchools?latitude=-34.6037&longitude=-58.3816",
+							"protocol": "https",
+							"host": [
+								"educase-assignment-tfkm",
+								"onrender",
+								"com"
+							],
+							"path": [
+								"listSchools"
+							],
+							"query": [
+								{
+									"key": "latitude",
+									"value": "-34.6037"
+								},
+								{
+									"key": "longitude",
+									"value": "-58.3816"
+								}
+							]
+						}
+					},
+					"status": "OK",
+					"code": 200,
+					"_postman_previewlanguage": "json",
+					"header": [
+						{
+							"key": "Date",
+							"value": "Wed, 26 Mar 2025 18:24:05 GMT"
+						},
+						{
+							"key": "Content-Type",
+							"value": "application/json; charset=utf-8"
+						},
+						{
+							"key": "Content-Length",
+							"value": "291"
+						},
+						{
+							"key": "Connection",
+							"value": "keep-alive"
+						},
+						{
+							"key": "Content-Encoding",
+							"value": "br"
+						},
+						{
+							"key": "etag",
+							"value": "W/\"297-F145Ioc/Dni90FnV3U9oabXwo0Y\""
+						},
+						{
+							"key": "rndr-id",
+							"value": "4747cd0b-67c4-4efe"
+						},
+						{
+							"key": "vary",
+							"value": "Accept-Encoding"
+						},
+						{
+							"key": "x-powered-by",
+							"value": "Express"
+						},
+						{
+							"key": "x-render-origin-server",
+							"value": "Render"
+						},
+						{
+							"key": "cf-cache-status",
+							"value": "DYNAMIC"
+						},
+						{
+							"key": "Server",
+							"value": "cloudflare"
+						},
+						{
+							"key": "CF-RAY",
+							"value": "9268aed1ac3c93c5-CCU"
+						},
+						{
+							"key": "alt-svc",
+							"value": "h3=\":443\"; ma=86400"
+						}
+					],
+					"cookie": [],
+					"body": "[\n    {\n        \"id\": 4,\n        \"name\": \"Maple Leaf School\",\n        \"address\": \"560 Maple Street\",\n        \"latitude\": 12.9604,\n        \"longitude\": 77.5839,\n        \"distance\": 14983.707364910775\n    },\n    {\n        \"id\": 5,\n        \"name\": \"St. Joseph's School\",\n        \"address\": \"25 Brigade Road\",\n        \"latitude\": 12.9537,\n        \"longitude\": 77.5988,\n        \"distance\": 14984.566651450905\n    },\n    {\n        \"id\": 1,\n        \"name\": \"Greenwood High\",\n        \"address\": \"123 Main St\",\n        \"latitude\": 12.9716,\n        \"longitude\": 77.5946,\n        \"distance\": 14985.379227140398\n    },\n    {\n        \"id\": 2,\n        \"name\": \"Eastside School\",\n        \"address\": \"14 Church Street\",\n        \"latitude\": 12.9769,\n        \"longitude\": 77.5998,\n        \"distance\": 14986.18227767879\n    },\n    {\n        \"id\": 3,\n        \"name\": \"Riverside Academy\",\n        \"address\": \"101 Riverside Lane\",\n        \"latitude\": 12.9833,\n        \"longitude\": 77.6055,\n        \"distance\": 14987.101407903134\n    }\n]"
+				}
+			]
+		}
+	]
+}
